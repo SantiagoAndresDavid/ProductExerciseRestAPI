@@ -1,5 +1,6 @@
 from crypt import methods
 from itertools import product
+from os import remove
 from flask import Flask, jsonify, request
 
 app = Flask(__name__)
@@ -46,6 +47,17 @@ def editProduct(product_name):
             'product': productsFound[0]
         })
     return jsonify({'message': 'Product Not found'})
+    
+@app.route('/products/<string: product_name>',methods=['DELETE'])
+def deleteProduct(product_name):
+    productsFound = [product for product in products if product['name'] == product_name]
+    if(len(productsFound)>0):
+        products.remove(productsFound)
+        return jsonify({"message": "Product deleted successfully",
+        "products": products
+        })
+    return jsonify({"message": "Product not found"})    
+    
 
 if __name__ == '__main__':
     app.run(debug=True, port =4000)
